@@ -12,6 +12,7 @@ datasource db {
 
 model Investment {
   id    Int    @id @default(autoincrement())
+  name String
   owner  String
   amount Float
   createdAt  DateTime   @default(now())

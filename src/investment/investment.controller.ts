@@ -18,11 +18,11 @@ export class InvestmentController {
   //   return this.investmentService.findAll();
   // }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.investmentService.findOne(+id);
-  // }
-
+  @Get(':id')
+  view(@Param('id') id: string) {
+    return this.investmentService.view(+id);
+  }
+  
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateInvestmentDto: UpdateInvestmentDto) {
   //   return this.investmentService.update(+id, updateInvestmentDto);
