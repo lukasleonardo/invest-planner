@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    image: postgres:16
+    ports:
+      - ${DATABASE_PORT}:5432
+    restart: always
+    volumes:
+      - db-data:/Programacao/data
+    environment:
+      - POSTGRES_DATABASE=${DATABASE_NAME}
+      - POSTGRES_USERNAME=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASS}
+
+volumes:
+  db-data:
