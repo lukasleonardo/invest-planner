@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { InvestmentService } from './investment.service';
 
 import { Prisma } from '@prisma/client';
@@ -23,10 +23,10 @@ export class InvestmentController {
     return this.investmentService.view(+id);
   }
   
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateInvestmentDto: UpdateInvestmentDto) {
-  //   return this.investmentService.update(+id, updateInvestmentDto);
-  // }
+  @Put(':id')
+  update(@Param('id') id: string, @Body() investment: Prisma.InvestmentUpdateInput) {
+    return this.investmentService.update(+id, investment);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
