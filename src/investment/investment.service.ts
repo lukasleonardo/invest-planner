@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma-client/prisma-client.service';
+import { PrismaService } from '../prisma-client/prisma-client.service';
 import { Prisma } from '@prisma/client';
 import { Investment} from './entities/investment.entity';
-import { HttpAdapterHost } from '@nestjs/core';
 
 
 @Injectable()
@@ -11,23 +10,36 @@ export class InvestmentService {
 
   async create(investment: Prisma.InvestmentCreateInput) {
     if(investment.amount<=0){
-      const actualDate = new Date()
-      if(investment.createdAt < actualDate){
-        throw new HttpException("Data inválida: data do investimento precisa ser igual ou anterior a data atual", HttpStatus.BAD_REQUEST)
-      }
-      throw new HttpException("Valor inválido", HttpStatus.BAD_REQUEST)
+      
+      return new HttpException("Valor Inválido", HttpStatus.BAD_REQUEST)
     }
-
+    const actualDate = new Date()
+    const oldDate = new Date(investment.createdAt)
+    if(oldDate > actualDate ){
+      return new HttpException("Data inválida: data do investimento precisa ser igual ou anterior a data atual", HttpStatus.BAD_REQUEST)
+    }
+    
     const createdInvestment = await this.prisma.investment.create({ data: investment })
     return createdInvestment;
   }
-  //Listar!
-  // findAll() {
+  
+  // findAll(investment: Prisma.InvestmentCreateInput) {
+  //   const actualDate = new Date()
+  //   const oldDate = new Date(investment.createdAt)
+  //   if(oldDate > actualDate ){
+  //     console.log('quack')
+  //     return new HttpException("Data inválida: data do investimento precisa ser igual ou anterior a data atual", HttpStatus.BAD_REQUEST)
+  //   }
   //   return `This action returns all investment`;
   // }
 
   async findOne(id: number) {
     const res= await this.prisma.investment.findUnique({where:{id:id}})
+    return res;
+  }
+
+  async findOneByName(owner: string) {
+    const res = await this.prisma.investment.findMany({where:{owner:owner}})
     return res;
   }
 
