@@ -22,6 +22,10 @@ export class InvestmentController {
   view(@Param('id') id: string) {
     return this.investmentService.view(+id);
   }
+  @Post(':id')
+  withdrawal(@Body('id') id: string) {
+    return this.investmentService.withdrawal(+id);
+  }
 
   @Get(':id')
   findOneByName(@Param('owner') owner: string) {

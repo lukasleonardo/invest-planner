@@ -122,7 +122,7 @@ export class InvestmentService {
     return await this.prisma.investment.delete({ where: {id} });
   }
   
-  async whithdrawal(id:number){
+  async withdrawal(id:number){
     const object = await this.findOne(id)
     if(object.amount == 0){  
       return "Saldo Insuficiente!"
@@ -145,12 +145,12 @@ export class InvestmentService {
     const {balance,amount,createdAt} = investment
     const gains = balance - amount
     let tax
-    if(actualDate.getFullYear() - createdAt.getFullYear()>=2){
+    if(actualDate.getFullYear() - createdAt.getFullYear()> 2){
       tax = gains*0.15
-    }else if(actualDate.getFullYear() - createdAt.getFullYear()>=1 ||actualDate.getFullYear() - createdAt.getFullYear()< 2 ){
+    }else if(actualDate.getFullYear() - createdAt.getFullYear()>1 && actualDate.getFullYear() - createdAt.getFullYear()<= 2 ){
       tax = gains*0.185
-    }else(actualDate.getFullYear() - createdAt.getFullYear()<1 )
-      tax = gains*0.225
+    }else{tax = gains*0.225}
+      
     return tax;
   }
 
