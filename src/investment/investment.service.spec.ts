@@ -38,5 +38,25 @@ describe('InvestmentService', () => {
       let investment = {name:'Amazon', owner:'jeff obesos', amount:10.0, createdAt:'2025-09-08T15:25:53Z'};
       expect(await investmentService.create(investment)).toEqual(new HttpException("Data inválida: data do investimento precisa ser igual ou anterior a data atual", HttpStatus.BAD_REQUEST))
     })
+
+    it('Deve retornar objeto criado',async ()=>{
+      let investment = {name:'Amazon', owner:'jeff obesos', amount:10.0, createdAt:'2023-09-08T15:25:53Z'};
+      expect(await investmentService.create(investment)).toBe(201)
+      expect(await investmentService.create(investment)).toEqual(investment)
+    })
   })
+
+  describe('',()=>{
+    it('no return',()=>{
+
+    })
+    it('retorno sem atualização de balanço',()=>{
+
+    })
+    it('retorno com atualização de balanço',()=>{
+
+    })
+  })
+
+
 });

@@ -46,29 +46,33 @@ export class InvestmentService {
   async calculateGain(investment:Investment){
     const {id,amount,balance,createdAt,lastPaymentDate} = investment
     const actualDate = new Date()
-    let paymentDate
-    if(amount == 0){
-      return investment
+    let paymentDate,tempBalance
+    const quota = 0.52
+    //-----------------------------------------
+    if(balance == null){
+      tempBalance = amount
+    }else{
+      tempBalance = balance
     }
 
-    //-----------------------------------------
+
     if(lastPaymentDate == null){
-      paymentDate = createdAt
+      paymentDate = new Date(createdAt)
     }if(lastPaymentDate != null){
-      paymentDate = lastPaymentDate
+      paymentDate = new Date(lastPaymentDate)
     } 
     
-    const quota = 0.52
+    
     let monthNumber
     if(actualDate.getFullYear() - paymentDate.getFullYear() == 1){
       monthNumber = actualDate.getMonth()+12
     }else{
       monthNumber = actualDate.getMonth()
     }
-    console.log(actualDate.getDate())
-    console.log(createdAt.getDate())
+  
+
     if(monthNumber - paymentDate.getMonth() == 1 && actualDate.getDate() == createdAt.getDate()){
-      const total = balance + (balance*quota)
+      const total = tempBalance + (tempBalance*quota)
       //Atualiza valor do balance e adiciona/atualiza data do ultimo pagamento feito.
       const investment = new Investment
       investment.amount = amount
@@ -79,14 +83,18 @@ export class InvestmentService {
       return updatedValue
     }
     
-    const expectedBalance = balance + (balance*quota)
+    const expectedBalance = tempBalance + (tempBalance*quota)
     investment.balance = expectedBalance
+    // valor futuro, previsão de quanto será ganho. nada é persistido.
     return investment
   }
 
 
   async view(id:number){
     const viewObjt = await this.findOne(id)
+    if(viewObjt.amount == 0){ 
+      return viewObjt
+    }
     const updatedInvestment = await this.calculateGain(viewObjt)
     return updatedInvestment;
   }
@@ -128,7 +136,7 @@ export class InvestmentService {
     //----
     const tax = await this.calculateTax(object)
     let value = object.balance - tax
-    return `O valor sacado foi dê: ${value} foram descontados ${tax} em taxas `
+    return `O valor sacado foi dê: ${value} foram descontados: ${tax} em taxas `
   }
 
   async calculateTax(investment: Investment){
