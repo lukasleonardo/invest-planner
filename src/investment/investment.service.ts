@@ -133,10 +133,10 @@ export class InvestmentService {
       const investment = new Investment
       investment.balance = gains
       investment.amount = 0
+      const tax = await this.calculateTax(object)
+      let value = object.balance - tax
      await this.update(id,investment)
     //----
-    const tax = await this.calculateTax(object)
-    let value = object.balance - tax
     return `O valor sacado foi dê: ${value} foram descontados: ${tax} em taxas `
   }
 

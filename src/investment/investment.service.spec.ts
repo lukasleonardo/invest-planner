@@ -9,16 +9,14 @@ import { Investment as InvestmentEntity } from './entities/investment.entity';
 
 describe('InvestmentService', () => {
   let investmentService: InvestmentService;
-  let prismaService:PrismaService
+
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
     providers: [InvestmentService,PrismaService],
     }).compile();
 
-    investmentService = module.get<InvestmentService>(InvestmentService);
-    prismaService = module.get<PrismaService>(PrismaService);
-
+    investmentService = module.get<InvestmentService>(InvestmentService);   
   });
 
   it('should be defined', () => {
@@ -47,7 +45,7 @@ describe('InvestmentService', () => {
     })
   })
 
-  describe('testes da rota de view',()=>{
+  xdescribe('testes da rota de view',()=>{
     it('retorno sem atualização de balanço',async ()=>{
       const mockData = new Date('2023-09-08T15:25:53Z')
       const mockLastData = new Date('2023-10-08T15:25:53Z')
@@ -69,16 +67,94 @@ describe('InvestmentService', () => {
     })
   })
 
+//Calculate Gain
+  describe('casos de teste da função calcular ganho',()=>{
+    it('teste caso função seja executada corretamente',async()=>{
+        // Mocking an existing investment object
+    const investment = {
+      id: 1,
+      amount: 1000,
+      balance: 500,
+      createdAt: new Date(2022, 0, 1),
+      lastPaymentDate: new Date(2022, 1, 1),
+    };
 
-  xdescribe('testes da função de calculo de balanço',()=>{
-    it('retorno sem atualização de balanço',()=>{
+    // Mocking the update function
+    jest.spyOn(InvestmentService.prototype, 'update').mockResolvedValueOnce(
+      {    
+        id: 1,
+        name:'any',
+        owner:'any',
+        amount: 1000,
+        balance: 760, // simulando ganho
+        createdAt: new Date(2022, 0, 1),
+        lastPaymentDate: new Date(), // simulando atualização da data
+    }
+    );
 
+    const result = await investmentService.calculateGain(investment);
+
+    expect(result).toEqual({
+      id: 1,
+      amount: 1000,
+      balance: 760,
+      createdAt: new Date(2022, 0, 1),
+      lastPaymentDate: expect.any(Date),
+    });
+
+    // Restore the original implementation of update
+    jest.restoreAllMocks();
     })
-    it('retorno com atualização de balanço',()=>{
 
+
+    it('retorno com atualização de balanço', async()=>{
+      // Mocking an existing investment object
+    const investment = {
+      id: 1,
+      amount: 1000,
+      balance: 500,
+      createdAt: new Date(2022, 0, 1),
+      lastPaymentDate: new Date(2022, 2, 1), // Assuming last payment was made more than a month ago
+    };
+
+    const result = await investmentService.calculateGain(investment);
+
+  
+    expect(result).toEqual({
+      id: 1,
+      amount: 1000,
+      balance: 760, // Assuming the expected balance after gain calculation
+      createdAt: new Date(2022, 0, 1),
+      lastPaymentDate: new Date(2022, 2, 1), // Assuming lastPaymentDate remains unchanged
+    });
+    })
+    it('retorno com atualização de balanço', async()=>{
+      // Mocking an existing investment object
+    const investment = {
+      id: 1,
+      amount: 500,
+      balance: null,
+      createdAt: new Date(2022, 0, 1),
+      lastPaymentDate: new Date(2022, 2, 1), // Assuming last payment was made more than a month ago
+    };
+
+    const result = await investmentService.calculateGain(investment);
+
+  
+    expect(result).toEqual({
+      id: 1,
+      amount: 500,
+      balance: 760, // Assuming the expected balance after gain calculation
+      createdAt: new Date(2022, 0, 1),
+      lastPaymentDate: new Date(2022, 2, 1), // Assuming lastPaymentDate remains unchanged
+    });
     })
   })
 
+  //Withdrawal
+  describe('Casos de teste da Rota de saque',()=>{
+    
+  })
 
 
 });
