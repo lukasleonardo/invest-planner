@@ -91,6 +91,7 @@ export class InvestmentService {
 
 
   async view(id:number){
+    //Foi escolhido o retorno do objeto por inteiro nas view para a manipulação como necessaria dos dados
     const viewObjt = await this.findOne(id)
     if(viewObjt.amount == 0){ 
       return viewObjt
