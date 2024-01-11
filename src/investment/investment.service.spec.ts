@@ -4,26 +4,27 @@ import { PrismaService } from '../prisma-client/prisma-client.service';
 
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Investment as Pinvestment } from '@prisma/client';
-import { Investment as InvestmentEntity } from './entities/investment.entity';
+
 
 
 describe('InvestmentService', () => {
   let investmentService: InvestmentService;
-
+  let prisma: PrismaService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
     providers: [InvestmentService,PrismaService],
     }).compile();
 
-    investmentService = module.get<InvestmentService>(InvestmentService);   
+    investmentService = module.get<InvestmentService>(InvestmentService); 
+    prisma = module.get<PrismaService>(PrismaService);  
   });
 
   it('should be defined', () => {
     expect(investmentService).toBeDefined();
   });
 
-  xdescribe('Testes referentes a Rota de Criação de investimentos ',()=>{
+  describe('Testes referentes a Rota de Criação de investimentos ',()=>{
     it('Deve retornar erro pois o valor é inválido', async ()=>{
       
       let investment = {name:'Amazon', owner:'jeff obesos', amount:0.0 };
@@ -45,7 +46,7 @@ describe('InvestmentService', () => {
     })
   })
 
-  xdescribe('testes da rota de view',()=>{
+  describe('testes da rota de view',()=>{
     it('retorno sem atualização de balanço',async ()=>{
       const mockData = new Date('2023-09-08T15:25:53Z')
       const mockLastData = new Date('2023-10-08T15:25:53Z')
@@ -68,7 +69,7 @@ describe('InvestmentService', () => {
   })
 
 //Calculate Gain
-  xdescribe('casos de teste da função calcular ganho',()=>{
+  describe('casos de teste da função calcular ganho',()=>{
     it('simula calculo do balanço e atualização do valor e data de ultimo pagamento',async()=>{
     
     const investment = {
@@ -152,7 +153,7 @@ describe('InvestmentService', () => {
 
   
 //função de calcular taxas
-  xdescribe('calculo de taxas',()=>{
+  describe('calculo de taxas',()=>{
     it('coeficiente de taxa de 0.15',async()=>{
       const actualDate = new Date()
       

@@ -6,6 +6,7 @@ import { Investment} from './entities/investment.entity';
 
 @Injectable()
 export class InvestmentService {
+  investmentService: { investment: { findMany: jest.Mock<any, any, any>; }; };
   constructor(private prisma:PrismaService){};
 
   async create(investment: Prisma.InvestmentCreateInput) {
@@ -22,16 +23,6 @@ export class InvestmentService {
     const createdInvestment = await this.prisma.investment.create({ data: investment })
     return createdInvestment;
   }
-  
-  // findAll(investment: Prisma.InvestmentCreateInput) {
-  //   const actualDate = new Date()
-  //   const oldDate = new Date(investment.createdAt)
-  //   if(oldDate > actualDate ){
-  //     console.log('quack')
-  //     return new HttpException("Data inválida: data do investimento precisa ser igual ou anterior a data atual", HttpStatus.BAD_REQUEST)
-  //   }
-  //   return `This action returns all investment`;
-  // }
 
   async findOne(id: number) {
     const res= await this.prisma.investment.findUnique({where:{id:id}})

@@ -13,11 +13,6 @@ export class InvestmentController {
   }
 
 
-  // @Get('/test')
-  // findAll(@Body() investment: Prisma.InvestmentCreateInput) {
-  //   return this.investmentService.findAll(investment);
-  // }
-
   @Get(':id')
   view(@Param('id') id: string) {
     return this.investmentService.view(+id);
