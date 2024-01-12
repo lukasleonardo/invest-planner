@@ -22,9 +22,12 @@ export class InvestmentController {
     return this.investmentService.withdrawal(+id);
   }
 
-  @Get(':id')
-  findOneByName(@Param('owner') owner: string) {
-    return this.investmentService.findOneByName(owner);
+  @Get(':owner?page=:num')
+  findOneByName(@Param('owner') owner: string, @Param('num') num:string) {
+    if(num = undefined){
+      num='1'
+    }
+    return this.investmentService.findOneByName(owner, +num);
   }
   
   @Put(':id')

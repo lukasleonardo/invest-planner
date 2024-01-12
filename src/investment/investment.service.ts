@@ -29,9 +29,32 @@ export class InvestmentService {
     return res;
   }
 
-  async findOneByName(owner: string) {
-    const res = await this.prisma.investment.findMany({where:{owner:owner}})
-    return res;
+  async findOneByName(owner: string, page:number) {
+    const limit = 10;
+    let lastPage = 1;
+    const qtdInv = await this.prisma.investment.count()
+    if(qtdInv !== 0 ){
+      lastPage = Math.ceil(qtdInv/limit)   
+    }else{
+      return new HttpException('Nenhum Registro encontrado',HttpStatus.BAD_GATEWAY)
+    }
+    
+    const res = await this.prisma.investment.findMany({
+      where:{owner:owner},
+      orderBy:{id:'asc'},
+      skip:Number((page*limit)-limit),
+      take:limit,
+    })
+    let pagination = {
+      path:'/investment',
+      page,
+      prev_page: Number(page)-Number(1) >=1? Number(page)-Number(1):false ,
+      next_page: Number(page)+Number(1) > lastPage ? false:Number(page)+Number(1),
+      lastPage,
+      qtdInv
+    }
+    return {res,pagination};
+    
   }
 
   async calculateGain(investment:Investment){
