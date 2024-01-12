@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query, Req } from '@nestjs/common';
 import { InvestmentService } from './investment.service';
 
 import { Prisma } from '@prisma/client';
@@ -12,6 +12,20 @@ export class InvestmentController {
     return this.investmentService.create(investment);
   }
 
+  @Get('list?:page')
+  findByName(@Body('owner') owner:string, @Query('page')page=1) {
+    return this.investmentService.findByName(owner,+page);
+  }
+
+  @Get('listAll')
+  findAll(){
+    return this.investmentService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string){
+    return this.investmentService.findOne(+id);
+  }
 
   @Get(':id')
   view(@Param('id') id: string) {
@@ -22,13 +36,10 @@ export class InvestmentController {
     return this.investmentService.withdrawal(+id);
   }
 
-  @Get(':owner?page=:num')
-  findOneByName(@Param('owner') owner: string, @Param('num') num:string) {
-    if(num = undefined){
-      num='1'
-    }
-    return this.investmentService.findOneByName(owner, +num);
-  }
+  
+
+
+  
   
   @Put(':id')
   update(@Param('id') id: string, @Body() investment: Prisma.InvestmentUpdateInput) {

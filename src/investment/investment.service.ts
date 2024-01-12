@@ -6,7 +6,6 @@ import { Investment} from './entities/investment.entity';
 
 @Injectable()
 export class InvestmentService {
-  investmentService: { investment: { findMany: jest.Mock<any, any, any>; }; };
   constructor(private prisma:PrismaService){};
 
   async create(investment: Prisma.InvestmentCreateInput) {
@@ -23,32 +22,38 @@ export class InvestmentService {
     const createdInvestment = await this.prisma.investment.create({ data: investment })
     return createdInvestment;
   }
+  async findAll(){
+    return await this.prisma.investment.findMany()
+  }
 
   async findOne(id: number) {
-    const res= await this.prisma.investment.findUnique({where:{id:id}})
+    const res= await this.prisma.investment.findUnique({
+      where:{id}
+    })
     return res;
   }
 
-  async findOneByName(owner: string, page:number) {
+  async findByName(owner, page) {
     const limit = 10;
     let lastPage = 1;
-    const qtdInv = await this.prisma.investment.count()
+    const qtdInv = await this.prisma.investment.count({where:{owner}})
     if(qtdInv !== 0 ){
       lastPage = Math.ceil(qtdInv/limit)   
     }else{
       return new HttpException('Nenhum Registro encontrado',HttpStatus.BAD_GATEWAY)
     }
-    
+
     const res = await this.prisma.investment.findMany({
-      where:{owner:owner},
+    
+      where:{owner},
       orderBy:{id:'asc'},
-      skip:Number((page*limit)-limit),
+      skip:Number(page*limit)-limit,
       take:limit,
     })
     let pagination = {
       path:'/investment',
       page,
-      prev_page: Number(page)-Number(1) >=1? Number(page)-Number(1):false ,
+      prev_page: Number(page)-Number(1) >= 1? Number(page)-Number(1):false ,
       next_page: Number(page)+Number(1) > lastPage ? false:Number(page)+Number(1),
       lastPage,
       qtdInv
