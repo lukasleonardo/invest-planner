@@ -1,7 +1,9 @@
 export class Investment {
-  id: string;
-  owner:string;
-  amount:number;
-  date:Date;
-
+  id?: number;
+  owner?:string;
+  name?:string;
+  amount?:number;
+  balance?:number
+  createdAt?:Date;
+  lastPaymentDate?:Date;
 }
